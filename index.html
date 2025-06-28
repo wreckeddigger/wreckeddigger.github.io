@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>$YOU:~ cosmic_self_terminal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        canvas {
+            display: block;
+        }
+        #youText {
+            display: none;
+            color: white;
+            font-family: 'Arimo', monospace;
+            font-size: 10vw; /* Default size, will be overridden dynamically */
+            position: absolute;
+            text-align: center;
+            pointer-events: none;
+            animation: glitch 0.5s infinite;
+        }
+        @keyframes glitch {
+            0% {
+                transform: translate(0);
+                opacity: 1;
+            }
+            20% {
+                transform: translate(-5px, 5px);
+                opacity: 0.8;
+                color: lime;
+            }
+            40% {
+                transform: translate(5px, -5px);
+                opacity: 0.6;
+                color: cyan;
+            }
+            60% {
+                transform: translate(-3px, 3px);
+                opacity: 0.8;
+            }
+            80% {
+                transform: translate(3px, -3px);
+                opacity: 0.7;
+                color: magenta;
+            }
+            100% {
+                transform: translate(0);
+                opacity: 1;
+            }
+        }
+        #youText::before,
+        #youText::after {
+            content: '$YOU';
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0.8;
+        }
+        #youText::before {
+            color: magenta;
+            animation: glitch-layer 0.5s infinite;
+        }
+        #youText::after {
+            color: cyan;
+            animation: glitch-layer 0.5s infinite reverse;
+        }
+        @keyframes glitch-layer {
+            0% { transform: translate(0); }
+            25% { transform: translate(-2px, 2px); }
+            50% { transform: translate(2px, -2px); }
+            75% { transform: translate(-1px, 1px); }
+            100% { transform: translate(0); }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="vortexCanvas"></canvas>
+    <div id="youText">$YOU</div>
+    <script>
+        const canvas = document.getElementById('vortexCanvas');
+        const ctx = canvas.getContext('2d');
+        const youText = document.getElementById('youText');
+
+        // Set canvas to full screen
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        // Vortex animation parameters
+        let t = 0;
+        const chars = 'YOU';
+        const density = 0.05;
+        const speed = 0.1;
+
+        function drawVortex() {
+            ctx.fillStyle = 'black';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.font = '14px monospace';
+            ctx.fillStyle = 'lime';
+
+            for (let x = 0; x < canvas.width; x += 10) {
+                for (let y = 0; y < canvas.height; y += 10) {
+                    if (Math.random() < density) {
+                        const angle = Math.atan2(y - canvas.height / 2, x - canvas.width / 2) + t;
+                        const char = chars[Math.floor(Math.random() * chars.length)];
+                        ctx.save();
+                        ctx.translate(x, y);
+                        ctx.rotate(angle);
+                        ctx.fillText(char, 0, 0);
+                        ctx.restore();
+                    }
+                }
+            }
+            t += speed;
+        }
+
+        // Animation loop
+        function animate() {
+            drawVortex();
+            requestAnimationFrame(animate);
+        }
+
+        // Start vortex animation
+        animate();
+
+        // Randomly show $YOU text with varying sizes
+        function showYouText() {
+            youText.style.display = 'block';
+            // Random font size between 5vw and 15vw
+            const fontSize = Math.random() * 10 + 5; // 5vw to 15vw
+            youText.style.fontSize = `${fontSize}vw`;
+            // Update pseudo-elements to match font size
+            youText.style.setProperty('--font-size', `${fontSize}vw`);
+            // Random position, accounting for dynamic text size
+            const maxX = window.innerWidth - youText.offsetWidth;
+            const maxY = window.innerHeight - youText.offsetHeight;
+            youText.style.left = `${Math.random() * maxX}px`;
+            youText.style.top = `${Math.random() * maxY}px`;
+            // Show for 0.5 seconds
+            setTimeout(() => {
+                youText.style.display = 'none';
+                // Schedule next appearance (0.5-2 seconds)
+                setTimeout(showYouText, Math.random() * 1500 + 500);
+            }, 500);
+        }
+
+        // Start showing $YOU randomly
+        showYouText();
+    </script>
+</body>
+</html>
