@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>$YOU:~ cosmic_self_terminal</title>
+    <title>$YOU VOID</title>
     <link href="https://fonts.googleapis.com/css2?family=Arimo:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -22,7 +22,7 @@
             display: none;
             color: white;
             font-family: 'Arimo', monospace;
-            font-size: 10vw; /* Default size, will be overridden dynamically */
+            font-size: 10vw;
             position: absolute;
             text-align: center;
             pointer-events: none;
@@ -32,6 +32,7 @@
             0% {
                 transform: translate(0);
                 opacity: 1;
+                color: white;
             }
             20% {
                 transform: translate(-5px, 5px);
@@ -46,6 +47,7 @@
             60% {
                 transform: translate(-3px, 3px);
                 opacity: 0.8;
+                color: white;
             }
             80% {
                 transform: translate(3px, -3px);
@@ -55,6 +57,7 @@
             100% {
                 transform: translate(0);
                 opacity: 1;
+                color: white;
             }
         }
         #youText::before,
@@ -80,15 +83,199 @@
             75% { transform: translate(-1px, 1px); }
             100% { transform: translate(0); }
         }
+        /* Audio button styles */
+        #audioButton {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 48px;
+            font-family: 'Arimo', monospace;
+            color: white;
+            cursor: pointer;
+            animation: glitch 0.5s infinite;
+            z-index: 1000;
+            line-height: 1;
+        }
+        #audioButton::before,
+        #audioButton::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0.8;
+        }
+        #audioButton::before {
+            color: magenta;
+            animation: glitch-layer 0.5s infinite;
+        }
+        #audioButton::after {
+            color: cyan;
+            animation: glitch-layer 0.5s infinite reverse;
+        }
+        /* Emoji button styles */
+        #emojiButton {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            font-size: 48px;
+            cursor: pointer;
+            animation: glitch 0.5s infinite;
+            z-index: 1000;
+        }
+        #emojiButton::before,
+        #emojiButton::after {
+            content: '🔮';
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0.8;
+        }
+        #emojiButton::before {
+            color: magenta;
+            animation: glitch-layer 0.5s infinite;
+        }
+        #emojiButton::after {
+            color: cyan;
+            animation: glitch-layer 0.5s infinite reverse;
+        }
+        /* ASCII dance overlay styles */
+        #asciiDanceOverlay {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1);
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            text-align: center;
+            animation: glitch 0.5s infinite, scaleDance 2s infinite;
+            z-index: 200;
+            white-space: pre;
+        }
+        #asciiDanceOverlay::before,
+        #asciiDanceOverlay::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0.8;
+        }
+        #asciiDanceOverlay::before {
+            color: magenta;
+            animation: glitch-layer 0.5s infinite;
+        }
+        #asciiDanceOverlay::after {
+            color: cyan;
+            animation: glitch-layer 0.5s infinite reverse;
+        }
+        @keyframes scaleDance {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.5); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+        audio {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <canvas id="vortexCanvas"></canvas>
     <div id="youText">$YOU</div>
+    <div id="audioButton" data-text="▶">▶</div>
+    <div id="emojiButton">🔮</div>
+    <pre id="asciiDanceOverlay" data-text="  Look into the void. What looks back?">  
+    
+    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⠤⠤⠤⠤⣄⠀⠀⠀⠀⠀⠀⢀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣶⡊⠉⠉⣉⣱⡷⠶⢢⣠⢴⣶⡝⠒⠉⢉⣭⡽⠟⢉⣀⡀⠹⢭⠒⢤⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡠⠔⢚⣩⡽⠿⠊⢉⣉⡂⣀⣩⠭⢴⠟⠋⠉⠉⠉⠛⠳⢦⣬⣤⡴⠞⠛⠁⠛⠳⣾⣧⠀⠟⠀⠉⠲⢄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡠⢚⠁⠀⠰⠋⢡⠄⠀⠞⣫⢟⡥⠒⠉⠹⣿⡀⠀⠀⢦⡀⠀⠀⠀⠈⠻⡧⡀⠀⠀⠀⠀⠈⠻⣗⡶⠶⠶⢤⡀⠱⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢮⣤⡾⠀⠀⣠⡴⠋⠀⡠⣚⠥⠒⢛⡲⠄⠀⠈⢻⡆⠀⠀⠻⣦⣀⠀⠀⠀⣿⠻⣦⣀⣴⠶⠂⠀⠘⣷⡄⠀⠀⢀⣴⡿⠈⠢⡀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⡠⠖⣉⣁⡀⠀⢀⣾⠋⠴⢿⣽⠋⠀⠞⢉⣉⣽⣳⣄⣀⠀⠋⠀⠀⠀⠈⠙⣷⡄⠀⠁⠀⠙⢤⣯⡀⠀⠀⠀⣼⡇⠀⡾⠋⠁⠀⠳⣄⠘⢆⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⡰⠋⠰⠛⢻⡞⢉⣠⣼⡇⢀⣴⠟⠛⠒⣴⠟⠋⠉⠀⠀⢀⣀⣀⡀⠀⠀⠀⠀⠀⣸⡇⠀⠀⠳⣄⠀⠉⢿⣄⠀⢰⣿⣧⡀⠀⣴⠶⠶⣦⡼⢧⠈⢣⠀⠀⠀⠀
+⠀⠀⠀⢀⡞⣡⣶⡄⠀⡟⣳⠿⠋⠙⡍⡽⠁⣀⣤⣤⣿⡄⠀⠀⠀⠀⡿⡉⣀⣀⣤⣤⣤⣴⠾⠥⠽⣦⣄⠀⠉⠻⢶⡼⢻⠀⠈⠇⠘⡷⡄⠘⠂⠀⢀⡍⠻⣷⣄⡇⠀⠀⠀
+⠀⠀⠀⠘⣺⠏⢸⢃⣼⠟⢁⡤⠀⣠⢟⡷⠟⢋⣉⣤⡿⠇⠀⠀⠀⢰⣣⠞⠋⠉⠉⠁⡀⠀⠀⠀⠀⠀⠙⢷⣄⠀⠀⢹⣾⠀⠀⠀⠀⢸⡇⠀⣀⡀⣾⠀⠀⠈⢻⡁⢦⠀⠀
+⠀⠀⣠⢚⣵⣄⠈⣼⡇⠀⢸⠧⢞⡵⠋⠠⠚⠉⠉⠀⠀⢀⡇⠀⣰⣟⣁⣀⠀⠀⠀⠀⠉⠒⠶⣤⣤⣀⠀⠀⠙⠀⠀⢸⡇⢰⣟⠛⢶⡋⣇⠀⠉⠻⡟⡄⠀⢀⢀⣿⠀⢧⠀
+⠀⣰⠃⢸⠁⣿⠀⠸⣧⠀⢸⢣⠋⠀⣠⣤⠶⢶⢒⣤⣔⣻⠣⢼⠟⠁⠀⠙⢷⡄⠀⠀⢀⠀⠀⠀⠈⠓⢟⢦⠀⠀⠀⢸⡇⠈⠻⣦⡀⠈⠻⣷⣄⠀⠘⣿⠀⠸⣿⣇⣀⢸⠀
+⠀⡇⠀⠀⣼⠇⠀⢀⣿⠀⣇⣇⣴⠟⠋⢠⣾⠟⠉⠀⠀⠈⠳⣼⠀⠀⠀⠀⠀⠳⠀⠀⠈⢳⣄⠀⠀⠀⢸⣼⠀⠀⠀⠈⡟⢆⠀⠈⢻⡀⠀⠈⢻⣆⠀⣻⠃⠀⠀⢹⡟⠻⡀
+⠀⢧⡆⣼⠏⠀⣾⠟⠁⢰⠃⡵⠃⢀⣴⡿⠁⠀⡀⠀⠀⠀⠀⠹⣧⡀⠰⣦⡀⠀⠀⠀⠀⠀⣻⢦⣀⣠⡾⣇⠀⠀⢀⣰⠟⠙⢷⣄⠀⠀⠀⠀⠀⣿⠀⠉⢠⠄⠀⣼⡇⠀⢧
+⢀⠞⢡⡟⠀⠀⣿⠀⢀⡏⡼⠁⣴⠟⠁⠀⠀⠀⣿⠀⣀⣀⢀⣴⠘⣷⡀⠈⢻⣦⣀⠀⢀⣾⠟⠉⠀⠀⠉⠻⣷⣄⠀⠀⠀⠀⠀⠙⢷⡄⠀⠀⠀⠉⠀⣠⡟⠀⣼⣟⠀⠀⢸
+⢸⠀⠘⣧⠀⡴⠛⠳⢸⢰⠁⢰⠏⠀⠀⠀⢀⣼⡯⠟⠋⠙⠻⣷⡀⠘⠀⠀⠀⠈⠉⠻⣿⠁⠀⠀⢰⡟⠉⠀⠈⢻⣦⠀⠀⠀⣄⠀⠀⡗⠀⢸⡇⣠⣾⠟⢀⣾⠋⠹⣷⢀⡇
+⠈⢆⠀⠹⢷⣤⣀⣠⠎⡇⠀⠸⠀⠀⢀⣴⠟⠉⠀⠀⠀⢄⠀⠹⣧⡀⠀⠀⣀⡀⠀⠀⣿⠀⠀⠀⠘⣿⡄⠀⠀⠀⢹⣦⡀⠀⢿⣄⠀⢀⣠⡿⠽⣯⡁⠀⠸⠃⠀⠀⡏⠉⠀
+⠀⢠⢷⣄⠀⠈⣉⣉⢢⢳⡀⠀⠀⠀⣾⡏⠀⠀⠠⣀⡤⢿⠀⠀⠙⠷⠶⠛⠉⠈⠀⣰⠟⠀⠀⠀⠀⠘⣷⡀⠀⠠⠛⠉⠉⠀⢈⣯⠗⠛⠁⠀⠀⠈⠃⠀⢀⣴⠇⢠⠇⠀⠀
+⠀⢸⡀⠻⣧⠈⠉⠹⣏⢀⣑⠤⣀⣀⠼⠳⣄⠀⠀⠀⠙⠺⠖⣦⣤⠤⣀⡀⠀⠀⠘⠁⠀⠀⠀⠀⠀⠀⢸⢧⡀⠀⠀⢀⣀⢴⣿⣅⡀⠠⠶⢿⢦⣀⣠⣴⠟⠃⡠⠋⠀⠀⠀
+⠀⠀⠳⡀⠘⠃⠀⡤⠸⣼⠀⠉⠛⠋⠉⠉⠙⠻⣦⣄⠀⠀⠀⠀⠈⠉⠙⠻⣦⠀⠀⠀⠀⡀⠀⠀⠀⢀⣾⠖⠚⠛⠛⠛⠋⠁⠀⠙⣷⠀⠀⣸⡴⠛⠉⢁⡤⠊⠁⠀⠀⠀⠀
+⠀⠀⠀⠘⢦⡀⠸⣧⠀⢻⢇⠀⠳⡤⣤⠆⠀⠀⠈⢻⡇⠀⠀⠀⢰⡄⠀⠀⣿⡇⢀⡾⠛⠛⠻⡝⣲⠟⠋⠀⢀⡄⠀⠀⠀⣀⡄⠀⠋⢀⡴⣻⡄⣤⡶⡍⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠈⠙⠁⠉⠉⠈⠣⡀⠹⣇⠀⠀⠀⠀⠘⠀⠀⠀⢀⡾⢳⡶⠾⠋⠀⠈⠃⠀⠀⣠⠟⢄⣀⣠⡴⠋⠀⠀⠀⣼⢻⣤⣴⠶⠟⠋⣡⡷⣏⢿⡧⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠓⢫⣲⣤⣀⣀⣀⣀⣤⣶⣻⠋⠛⠷⣦⣤⣤⣄⡤⢤⣺⠕⠋⠉⠉⠁⠀⠀⣀⣤⣾⠏⢩⠀⠀⢀⣤⣾⠛⣧⢻⣼⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠓⠮⢭⣉⣉⡩⠥⠚⠈⢇⠀⢠⡄⠀⠉⠉⠙⣿⠀⢠⠶⠖⢫⣩⠟⠛⠛⠉⠀⣠⣿⣦⠶⠿⣭⣸⣇⡿⠞⠁⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠳⣌⡿⣄⠀⠒⠚⠋⠀⠀⠀⣠⡾⠃⠀⢀⣀⠴⠚⠉⠣⢍⣛⣶⡶⠝⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⠒⠂⠀⠒⠒⠉⠀⠉⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+</pre>
+    <audio id="welcomeSound" loop>
+        <source src="welcomeyou.mp3" type="audio/mp3">
+        Your browser does not support the audio element.
+    </audio>
     <script>
         const canvas = document.getElementById('vortexCanvas');
         const ctx = canvas.getContext('2d');
         const youText = document.getElementById('youText');
+        const audioButton = document.getElementById('audioButton');
+        const welcomeSound = document.getElementById('welcomeSound');
+        const emojiButton = document.getElementById('emojiButton');
+        const asciiDanceOverlay = document.getElementById('asciiDanceOverlay');
+
+        // Set audio volume
+        welcomeSound.volume = 0.3;
+
+        // Toggle play/pause on audio button click
+        let isPlaying = false;
+        audioButton.addEventListener('click', () => {
+            if (isPlaying) {
+                welcomeSound.pause();
+                audioButton.textContent = '▶';
+                audioButton.setAttribute('data-text', '▶');
+                isPlaying = false;
+            } else {
+                welcomeSound.play().catch(error => {
+                    console.error("Erreur de lecture audio :", error);
+                });
+                audioButton.textContent = '||';
+                audioButton.setAttribute('data-text', '||');
+                isPlaying = true;
+            }
+        });
+
+        // ASCII dance frames
+        const asciiFrames = [
+$YOU
+        ];
+
+        // Toggle and animate ASCII dance on emoji click
+        let isAsciiDanceVisible = false;
+        let currentFrame = 0;
+        let animationInterval = null;
+        emojiButton.addEventListener('click', () => {
+            isAsciiDanceVisible = !isAsciiDanceVisible;
+            asciiDanceOverlay.style.display = isAsciiDanceVisible ? 'block' : 'none';
+            if (isAsciiDanceVisible) {
+                // Start animation
+                if (!animationInterval) {
+                    animationInterval = setInterval(() => {
+                        currentFrame = (currentFrame + 1) % asciiFrames.length;
+                        asciiDanceOverlay.textContent = asciiFrames[currentFrame];
+                        asciiDanceOverlay.setAttribute('data-text', asciiFrames[currentFrame]);
+                    }, 10000); // Change frame every 500ms
+                }
+            } else {
+                // Stop animation
+                clearInterval(animationInterval);
+                animationInterval = null;
+                currentFrame = 0;
+                asciiDanceOverlay.textContent = asciiFrames[0];
+                asciiDanceOverlay.setAttribute('data-text', asciiFrames[0]);
+            }
+        });
 
         // Set canvas to full screen
         function resizeCanvas() {
@@ -138,20 +325,14 @@
         // Randomly show $YOU text with varying sizes
         function showYouText() {
             youText.style.display = 'block';
-            // Random font size between 5vw and 15vw
             const fontSize = Math.random() * 10 + 5; // 5vw to 15vw
             youText.style.fontSize = `${fontSize}vw`;
-            // Update pseudo-elements to match font size
-            youText.style.setProperty('--font-size', `${fontSize}vw`);
-            // Random position, accounting for dynamic text size
             const maxX = window.innerWidth - youText.offsetWidth;
             const maxY = window.innerHeight - youText.offsetHeight;
             youText.style.left = `${Math.random() * maxX}px`;
             youText.style.top = `${Math.random() * maxY}px`;
-            // Show for 0.5 seconds
             setTimeout(() => {
                 youText.style.display = 'none';
-                // Schedule next appearance (0.5-2 seconds)
                 setTimeout(showYouText, Math.random() * 1500 + 500);
             }, 500);
         }
