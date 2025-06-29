@@ -14,6 +14,8 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+              cursor: url('cursor.png') 50 60, auto;
+
         }
         canvas {
             display: block;
@@ -91,7 +93,7 @@
             position: fixed;
             bottom: 20px;
             left: 20px;
-            font-size: 48px;
+            font-size: 28px;
             cursor: pointer;
             animation: glitch 0.5s infinite;
             z-index: 1000;
@@ -116,14 +118,14 @@
             position: fixed;
             bottom: 80px;
             left: 20px;
-            font-size: 48px;
+            font-size: 28px;
             cursor: pointer;
             animation: glitch 0.5s infinite;
             z-index: 1000;
         }
         #galleryButton::before,
         #galleryButton::after {
-            content: '🖼️';
+            content: '👽';
             position: absolute;
             left: 0;
             top: 0;
@@ -141,7 +143,7 @@
             position: fixed;
             bottom: 140px; /* Positioned above gallery button */
             left: 20px;
-            font-size: 48px;
+            font-size: 28px;
             cursor: pointer;
             animation: glitch 0.5s infinite;
             z-index: 1000;
@@ -284,6 +286,51 @@
         audio {
             display: none;
         }
+        
+        #alienImage {
+    display: none; /* Initially hidden */
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 427px; /* Initial width */
+    height: 584px; /* Initial height */
+    object-fit: contain;
+    z-index: 500; /* Ensure it appears above other elements */
+    animation: none; /* No animation until triggered */
+}
+
+@keyframes alienGlitch {
+    0% {
+        transform: translate(0, 0) scale(1);
+        filter: hue-rotate(0deg);
+        opacity: 1;
+    }
+    20% {
+        transform: translate(-5px, 5px) scale(1.2);
+        filter: hue-rotate(90deg);
+        opacity: 0.8;
+    }
+    40% {
+        transform: translate(5px, -5px) scale(1.4);
+        filter: hue-rotate(180deg);
+        opacity: 0.6;
+    }
+    60% {
+        transform: translate(-3px, 3px) scale(1.6);
+        filter: hue-rotate(270deg);
+        opacity: 0.7;
+    }
+    80% {
+        transform: translate(3px, -3px) scale(1.8);
+        filter: hue-rotate(360deg);
+        opacity: 0.9;
+    }
+    100% {
+        transform: translate(0, 0) scale(2);
+        filter: hue-rotate(0deg);
+        opacity: 1;
+    }
+}
     </style>
 </head>
 <body>
@@ -291,12 +338,15 @@
     <div id="youText">$YOU</div>
     <div id="audioButton" data-text="▶">▶</div>
     <div id="emojiButton">🔮</div>
-    <div id="galleryButton">🖼️</div>
+    <div id="galleryButton">👽</div>
     <div id="videoButton">📺</div>
     <div id="galleryOverlay">
         <img id="galleryImage" src="you1.png" alt="Gallery Image">
     </div>
     <div id="videoOverlay"></div>
+    <img id="alienImage" src="alien.png" alt="Alien Image">
+
+
     <pre id="asciiDanceOverlay" data-text="Look into the void. What looks back?">  
     ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⠤⠤⠤⠤⣄⠀⠀⠀⠀⠀⠀⢀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣶⡊⠉⠉⣉⣱⡷⠶⢢⣠⢴⣶⡝⠒⠉⢉⣭⡽⠟⢉⣀⡀⠹⢭⠒⢤⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -356,130 +406,140 @@
         Your browser does not support the audio element.
     </audio>
     <script>
-        const canvas = document.getElementById('vortexCanvas');
-        const ctx = canvas.getContext('2d');
-        const youText = document.getElementById('youText');
-        const audioButton = document.getElementById('audioButton');
-        const welcomeSound = document.getElementById('welcomeSound');
-        const emojiButton = document.getElementById('emojiButton');
-        const galleryButton = document.getElementById('galleryButton');
-        const videoButton = document.getElementById('videoButton');
-        const galleryOverlay = document.getElementById('galleryOverlay');
-        const galleryImage = document.getElementById('galleryImage');
-        const videoOverlay = document.getElementById('videoOverlay');
-        const asciiDanceOverlay = document.getElementById('asciiDanceOverlay');
-        const asciiFlashingOverlay = document.getElementById('asciiFlashingOverlay');
+const canvas = document.getElementById('vortexCanvas');
+const ctx = canvas.getContext('2d');
+const youText = document.getElementById('youText');
+const audioButton = document.getElementById('audioButton');
+const welcomeSound = document.getElementById('welcomeSound');
+const emojiButton = document.getElementById('emojiButton');
+const galleryButton = document.getElementById('galleryButton');
+const videoButton = document.getElementById('videoButton');
+const galleryOverlay = document.getElementById('galleryOverlay');
+const galleryImage = document.getElementById('galleryImage');
+const videoOverlay = document.getElementById('videoOverlay');
+const asciiDanceOverlay = document.getElementById('asciiDanceOverlay');
+const asciiFlashingOverlay = document.getElementById('asciiFlashingOverlay');
+const alienImage = document.getElementById('alienImage');
 
-        // Set audio volume
-        welcomeSound.volume = 0.3;
+// Set audio volume
+welcomeSound.volume = 0.3;
 
-        // Toggle play/pause on audio button click
-        let isPlaying = false;
-        audioButton.addEventListener('click', () => {
-            if (isPlaying) {
-                welcomeSound.pause();
-                audioButton.textContent = '▶';
-                audioButton.setAttribute('data-text', '▶');
-                isPlaying = false;
-            } else {
-                welcomeSound.play().catch(error => {
-                    console.error("Erreur de lecture audio :", error);
-                });
-                audioButton.textContent = '||';
-                audioButton.setAttribute('data-text', '||');
-                isPlaying = true;
-            }
+// Toggle play/pause on audio button click
+let isPlaying = false;
+audioButton.addEventListener('click', () => {
+    if (isPlaying) {
+        welcomeSound.pause();
+        audioButton.textContent = '▶';
+        audioButton.setAttribute('data-text', '▶');
+        isPlaying = false;
+        alienImage.style.display = 'none'; // Hide alien image when pausing
+        alienImage.style.animation = 'none'; // Stop animation
+    } else {
+        welcomeSound.play().catch(error => {
+            console.error("Erreur de lecture audio :", error);
+        });
+        audioButton.textContent = '||';
+        audioButton.setAttribute('data-text', '||');
+        isPlaying = true;
+        // Show and animate alien image
+        alienImage.style.display = 'block';
+        alienImage.style.animation = 'alienGlitch 5s linear forwards';
+        setTimeout(() => {
+            alienImage.style.display = 'none';
+            alienImage.style.animation = 'none'; // Reset animation
+        }, 10000); // Hide after 5 seconds
+    }
+});
+
+// ASCII dance frames for emoji button
+const asciiFrames = [
+    'You paper hand your dreams but diamond hand your delusions.'
+];
+
+// Toggle and animate ASCII dance on emoji click
+let isAsciiDanceVisible = false;
+let currentFrame = 0;
+let animationInterval = null;
+emojiButton.addEventListener('click', () => {
+    isAsciiDanceVisible = !isAsciiDanceVisible;
+    asciiDanceOverlay.style.display = isAsciiDanceVisible ? 'block' : 'none';
+    if (isAsciiDanceVisible) {
+        // Start animation
+        if (!animationInterval) {
+            animationInterval = setInterval(() => {
+                currentFrame = (currentFrame + 1) % asciiFrames.length;
+                asciiDanceOverlay.textContent = asciiFrames[currentFrame];
+                asciiDanceOverlay.setAttribute('data-text', asciiFrames[currentFrame]);
+            }, 10000); // Change frame every 10s
+        }
+    } else {
+        // Stop animation
+        clearInterval(animationInterval);
+        animationInterval = null;
+        currentFrame = 0;
+        asciiDanceOverlay.textContent = asciiFrames[0];
+        asciiDanceOverlay.setAttribute('data-text', asciiFrames[0]);
+    }
+});
+
+// Gallery slideshow logic
+const images = Array.from({length: 18}, (_, i) => `you${i+1}.png`);
+let currentImageIndex = 0;
+let slideshowInterval = null;
+
+galleryButton.addEventListener('click', () => {
+    galleryOverlay.style.display = 'flex';
+    currentImageIndex = 0;
+    galleryImage.src = images[currentImageIndex];
+
+    // Start rapid slideshow
+    slideshowInterval = setInterval(() => {
+        currentImageIndex++;
+        if (currentImageIndex >= images.length) {
+            // Stop slideshow and hide overlay
+            clearInterval(slideshowInterval);
+            slideshowInterval = null;
+            galleryOverlay.style.display = 'none';
+            return;
+        }
+        galleryImage.src = images[currentImageIndex];
+    }, 100); // Change image every 100ms for epileptic effect
+});
+
+// Video overlay logic
+videoButton.addEventListener('click', () => {
+    const numberOfVideos = 3; // Number of video instances
+    for (let i = 0; i < numberOfVideos; i++) {
+        const video = document.createElement('video');
+        video.src = 'vortex.mp4';
+        video.className = 'glitchVideo';
+        video.autoplay = true;
+        video.muted = true; // Mute to avoid multiple audio tracks
+
+        // Random size (between 20% and 50% of viewport width)
+        const size = Math.random() * 30 + 20;
+        video.style.width = `${size}vw`;
+        video.style.height = 'auto';
+
+        // Random position
+        video.style.left = `${Math.random() * (100 - size)}%`;
+        video.style.top = `${Math.random() * (100 - size)}%`;
+
+        // Random rotation
+        const rotation = Math.random() * 360;
+        video.style.transform = `rotate(${rotation}deg)`;
+
+        // Remove video when it ends
+        video.addEventListener('ended', () => {
+            video.remove();
         });
 
-        // ASCII dance frames for emoji button
-        const asciiFrames = [
-            'You paper hand your dreams but diamond hand your delusions.'
-        ];
+        videoOverlay.appendChild(video);
+    }
+});
 
-        // Toggle and animate ASCII dance on emoji click
-        let isAsciiDanceVisible = false;
-        let currentFrame = 0;
-        let animationInterval = null;
-        emojiButton.addEventListener('click', () => {
-            isAsciiDanceVisible = !isAsciiDanceVisible;
-            asciiDanceOverlay.style.display = isAsciiDanceVisible ? 'block' : 'none';
-            if (isAsciiDanceVisible) {
-                // Start animation
-                if (!animationInterval) {
-                    animationInterval = setInterval(() => {
-                        currentFrame = (currentFrame + 1) % asciiFrames.length;
-                        asciiDanceOverlay.textContent = asciiFrames[currentFrame];
-                        asciiDanceOverlay.setAttribute('data-text', asciiFrames[currentFrame]);
-                    }, 10000); // Change frame every 10s
-                }
-            } else {
-                // Stop animation
-                clearInterval(animationInterval);
-                animationInterval = null;
-                currentFrame = 0;
-                asciiDanceOverlay.textContent = asciiFrames[0];
-                asciiDanceOverlay.setAttribute('data-text', asciiFrames[0]);
-            }
-        });
-
-        // Gallery slideshow logic
-        const images = Array.from({length: 18}, (_, i) => `you${i+1}.png`);
-        let currentImageIndex = 0;
-        let slideshowInterval = null;
-
-        galleryButton.addEventListener('click', () => {
-            galleryOverlay.style.display = 'flex';
-            currentImageIndex = 0;
-            galleryImage.src = images[currentImageIndex];
-
-            // Start rapid slideshow
-            slideshowInterval = setInterval(() => {
-                currentImageIndex++;
-                if (currentImageIndex >= images.length) {
-                    // Stop slideshow and hide overlay
-                    clearInterval(slideshowInterval);
-                    slideshowInterval = null;
-                    galleryOverlay.style.display = 'none';
-                    return;
-                }
-                galleryImage.src = images[currentImageIndex];
-            }, 100); // Change image every 100ms for epileptic effect
-        });
-
-        // Video overlay logic
-        videoButton.addEventListener('click', () => {
-            const numberOfVideos = 3; // Number of video instances
-            for (let i = 0; i < numberOfVideos; i++) {
-                const video = document.createElement('video');
-                video.src = 'vortex.mp4';
-                video.className = 'glitchVideo';
-                video.autoplay = true;
-                video.muted = true; // Mute to avoid multiple audio tracks
-
-                // Random size (between 20% and 50% of viewport width)
-                const size = Math.random() * 30 + 20;
-                video.style.width = `${size}vw`;
-                video.style.height = 'auto';
-
-                // Random position
-                video.style.left = `${Math.random() * (100 - size)}%`;
-                video.style.top = `${Math.random() * (100 - size)}%`;
-
-                // Random rotation
-                const rotation = Math.random() * 360;
-                video.style.transform = `rotate(${rotation}deg)`;
-
-                // Remove video when it ends
-                video.addEventListener('ended', () => {
-                    video.remove();
-                });
-
-                videoOverlay.appendChild(video);
-            }
-        });
-
-        // Flashing ASCII overlay logic
-        const asciiFlashingArt = `⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠱⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+// Flashing ASCII overlay logic
+const asciiFlashingArt = `⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠱⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡄⢹⠀⠀⡀⠀⠀⠀⠀⠀⠀⣇⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣤⣤⠴⣶⣶⣺⣿⣼⣄⠀⣟⣇⠀⢠⠀⠀⠀⣿⠀⠀⠀⡿⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⠀⢀⣤⡿⠚⣹⣧⣶⠟⣏⢛⢹⣿⣿⢉⠉⡏⡿⣿⢻⠶⣤⣰⣷⡇⠠⣰⣿⣇⢀⠆⠀⠀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
@@ -506,82 +566,82 @@
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠓⠲⠤⢤⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀`;
 
-        // Flashing ASCII animation
-        function startFlashingAnimation() {
-            asciiFlashingOverlay.style.display = 'block';
-            asciiFlashingOverlay.textContent = asciiFlashingArt;
-            asciiFlashingOverlay.setAttribute('data-text', asciiFlashingArt);
-            setTimeout(() => {
-                asciiFlashingOverlay.style.display = 'none';
-                setTimeout(startFlashingAnimation, 13000); // 15s total cycle (2s display + 13s hidden)
-            }, 2000); // Display for 2 seconds
-        }
+// Flashing ASCII animation
+function startFlashingAnimation() {
+    asciiFlashingOverlay.style.display = 'block';
+    asciiFlashingOverlay.textContent = asciiFlashingArt;
+    asciiFlashingOverlay.setAttribute('data-text', asciiFlashingArt);
+    setTimeout(() => {
+        asciiFlashingOverlay.style.display = 'none';
+        setTimeout(startFlashingAnimation, 13000); // 15s total cycle (2s display + 13s hidden)
+    }, 2000); // Display for 2 seconds
+}
 
-        // Start flashing animation immediately
-        startFlashingAnimation();
+// Start flashing animation immediately
+startFlashingAnimation();
 
-        // Set canvas to full screen
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+// Set canvas to full screen
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
 
-        // Vortex animation parameters
-        let t = 0;
-        const chars = 'YOU';
-        const density = 0.05;
-        const speed = 0.1;
+// Vortex animation parameters
+let t = 0;
+const chars = 'YOU';
+const density = 0.05;
+const speed = 0.1;
 
-        function drawVortex() {
-            ctx.fillStyle = 'black';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.font = '14px monospace';
-            ctx.fillStyle = 'lime';
+function drawVortex() {
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.font = '14px monospace';
+    ctx.fillStyle = 'lime';
 
-            for (let x = 0; x < canvas.width; x += 10) {
-                for (let y = 0; y < canvas.height; y += 10) {
-                    if (Math.random() < density) {
-                        const angle = Math.atan2(y - canvas.height / 2, x - canvas.width / 2) + t;
-                        const char = chars[Math.floor(Math.random() * chars.length)];
-                        ctx.save();
-                        ctx.translate(x, y);
-                        ctx.rotate(angle);
-                        ctx.fillText(char, 0, 0);
-                        ctx.restore();
-                    }
-                }
+    for (let x = 0; x < canvas.width; x += 10) {
+        for (let y = 0; y < canvas.height; y += 10) {
+            if (Math.random() < density) {
+                const angle = Math.atan2(y - canvas.height / 2, x - canvas.width / 2) + t;
+                const char = chars[Math.floor(Math.random() * chars.length)];
+                ctx.save();
+                ctx.translate(x, y);
+                ctx.rotate(angle);
+                ctx.fillText(char, 0, 0);
+                ctx.restore();
             }
-            t += speed;
         }
+    }
+    t += speed;
+}
 
-        // Animation loop
-        function animate() {
-            drawVortex();
-            requestAnimationFrame(animate);
-        }
+// Animation loop
+function animate() {
+    drawVortex();
+    requestAnimationFrame(animate);
+}
 
-        // Start vortex animation
-        animate();
+// Start vortex animation
+animate();
 
-        // Randomly show $YOU text with varying sizes
-        function showYouText() {
-            youText.style.display = 'block';
-            const fontSize = Math.random() * 10 + 5; // 5vw to 15vw
-            youText.style.fontSize = `${fontSize}vw`;
-            const maxX = window.innerWidth - youText.offsetWidth;
-            const maxY = window.innerHeight - youText.offsetHeight;
-            youText.style.left = `${Math.random() * maxX}px`;
-            youText.style.top = `${Math.random() * maxY}px`;
-            setTimeout(() => {
-                youText.style.display = 'none';
-                setTimeout(showYouText, Math.random() * 1500 + 500);
-            }, 500);
-        }
+// Randomly show $YOU text with varying sizes
+function showYouText() {
+    youText.style.display = 'block';
+    const fontSize = Math.random() * 10 + 5; // 5vw to 15vw
+    youText.style.fontSize = `${fontSize}vw`;
+    const maxX = window.innerWidth - youText.offsetWidth;
+    const maxY = window.innerHeight - youText.offsetHeight;
+    youText.style.left = `${Math.random() * maxX}px`;
+    youText.style.top = `${Math.random() * maxY}px`;
+    setTimeout(() => {
+        youText.style.display = 'none';
+        setTimeout(showYouText, Math.random() * 1500 + 500);
+    }, 500);
+}
 
-        // Start showing $YOU randomly
-        showYouText();
+// Start showing $YOU randomly
+showYouText();
     </script>
 </body>
 </html>
